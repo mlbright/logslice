@@ -1,0 +1,8 @@
+[package]
+name = "logslice"
+version = "0.1.0"
+authors = ["Martin-Louis Bright <mlbright@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+regex = "1.1"
