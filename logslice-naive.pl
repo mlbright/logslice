@@ -9,8 +9,7 @@ use warnings;
 use Carp;
 
 my $opts = {};
-GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s",
-  "--chunk=i" );
+GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s" );
 
 my $parser = DateTime::Format::Strptime->new(
   pattern  => $opts->{format},
@@ -18,7 +17,6 @@ my $parser = DateTime::Format::Strptime->new(
 );
 
 my $regex      = qr/$opts->{regex}/;
-my $chunk      = $opts->{chunk} || 1000;
 my $low_needle = DateTime::Format::Strptime->new(
   pattern  => '%FT%T',
   on_error => 'croak',
