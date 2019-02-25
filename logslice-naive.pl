@@ -30,7 +30,9 @@ while ( my $line = <> ) {
   my ($time) = $line =~ /$regex/;
   next unless ( defined($time) );
   my $t = $log_time_parser->parse_datetime($time);
-  if ( $t > $low_needle && $t < $high_needle ) {
+  if ( $t >= $low_needle && $t <= $high_needle ) {
     print $line;
+  }else {
+    print STDERR "mean! $line";
   }
 }

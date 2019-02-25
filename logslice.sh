@@ -4,14 +4,16 @@ set -e
 regex='\[(\d+\/\w+\/\d\d\d\d:\d\d:\d\d:\d\d\.\d+)\]'
 format='%d/%B/%Y:%T.%3N'
 
+time wc -l sample.log
+
 time perl logslice-binary-search.pl \
   --regex="$regex" \
   --begin="2019-02-20T06:00:00" \
   --end="2019-02-23T07:00:00" \
-  --format="$format" < haproxy.log | wc -l
+  --format="$format" < sample.log | wc -l
 
 time perl logslice-naive.pl \
   --regex="$regex" \
   --begin="2019-02-20T06:00:00" \
   --end="2019-02-23T07:00:00" \
-  --format="$format" < haproxy.log | wc -l
+  --format="$format" < sample.log 2> err.log | wc -l

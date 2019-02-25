@@ -28,16 +28,13 @@ my $supplied_time_parser = DateTime::Format::Strptime->new(
 my $regex = qr/$opts->{regex}/;
 
 my @buffer;
+my @times;
 while ( my $line = <> ) {
-  next unless ( $line =~ /$regex/ );
+  my ($time) = $line =~ /$regex/;
+  next unless(defined($time));
+  push @times, $time;
   push @buffer, $line;
   if ( @buffer == $chunk || eof ) {
-    my @times;
-    for my $line (@buffer) {
-      my ($time) = $line =~ /$regex/;
-      push @times, $time;
-    }
-
     my ( $low, $high ) = binsearch_range {
       $log_time_parser->parse_datetime($a)
         <=> $log_time_parser->parse_datetime($b)
@@ -51,5 +48,6 @@ while ( my $line = <> ) {
       print $buffer[$i];
     }
     @buffer = ();
+    @times = ();
   }
 }
