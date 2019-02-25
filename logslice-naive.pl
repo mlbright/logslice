@@ -28,18 +28,11 @@ my $high_needle = DateTime::Format::Strptime->new(
   on_error => 'croak',
 )->parse_datetime( $opts->{end} );
 
-my @buffer;
-while (<>) {
-  push @buffer, $_;
-  if ( @buffer == $chunk || eof ) {
-    for my $line (@buffer) {
-      my ($time) = $line =~ $regex;
-      next unless ( defined($time) );
-      my $t = $parser->parse_datetime($time);
-      if ( $t >= $low_needle && $t <= $high_needle ) {
-        print $line;
-      }
-    }
-    @buffer = ();
+while ( my $line = <> ) {
+  my ($time) = $line =~ $regex;
+  next unless ( defined($time) );
+  my $t = $parser->parse_datetime($time);
+  if ( $t >= $low_needle && $t <= $high_needle ) {
+    print $line;
   }
 }
