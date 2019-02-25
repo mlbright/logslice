@@ -1,32 +1,44 @@
 #!/usr/bin/env perl
 
+use DateTime::Format::Strptime;
+use Getopt::Long;
+use Time::Piece;
+use feature qw{ say };
 use strict;
 use warnings;
-use feature qw{ say };
-use Getopt::Long;
+use Carp;
 
 my $opts = {};
 GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s",
   "--chunk=i" );
 
-my $regex = qr/$opts->{regex}/;
-my $chunk = $opts->{chunk} || 1000;
-my $low_needle = Time::Piece->strptime($opts->{begin},"%Y-%m-%dT%T");
-my $high_needle = Time::Piece->strptime($opts->{end},"%Y-%m-%dT%T");
-say $low_needle;
-say $high_needle;
+my $parser = DateTime::Format::Strptime->new(
+  pattern  => $opts->{format},
+  on_error => 'croak',
+);
+
+my $regex      = qr/$opts->{regex}/;
+my $chunk      = $opts->{chunk} || 1000;
+my $low_needle = DateTime::Format::Strptime->new(
+  pattern  => '%FT%T',
+  on_error => 'croak',
+)->parse_datetime( $opts->{begin} );
+my $high_needle = DateTime::Format::Strptime->new(
+  pattern  => '%FT%T',
+  on_error => 'croak',
+)->parse_datetime( $opts->{end} );
 
 my @buffer;
-while ( <> ) {
+while (<>) {
   push @buffer, $_;
-  if (@buffer == $chunk || eof) {
+  if ( @buffer == $chunk || eof ) {
     for my $line (@buffer) {
-      chomp $line;
       my ($time) = $line =~ $regex;
-      my $t = Time::Piece->strptime($time,"%m/%B/%Y:%H:%M:%s.%.3N");
-      # my ( $low, $high ) = binsearch_range { $a <=> $b }, $low_needle, $high_needle, @buffer;
-      say $t;
-      say $line;
+      next unless ( defined($time) );
+      my $t = $parser->parse_datetime($time);
+      if ( $t >= $low_needle && $t <= $high_needle ) {
+        print $line;
+      }
     }
     @buffer = ();
   }
