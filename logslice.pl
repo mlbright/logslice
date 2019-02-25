@@ -3,11 +3,17 @@
 use strict;
 use warnings;
 use feature qw{ say };
+use Getopt::Long;
 
-open my $ha, '<', 'haproxy.log';
-while (my $line = <$ha>) {
+my $opts = {};
+GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s",
+  "--chunk=i" );
+
+my $regex = qr/$opts->{regex}/;
+
+while ( my $line = <> ) {
   chomp $line;
-  if ($line =~ m{\[\d+\/\w+\/\d\d\d\d:\d\d:\d\d:\d\d\.\d+\]}) {
+  if ( $line =~ $regex ) {
     say $line;
   }
 }
