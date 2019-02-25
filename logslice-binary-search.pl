@@ -29,9 +29,7 @@ my $regex = qr/$opts->{regex}/;
 
 my @buffer;
 while ( my $line = <> ) {
-  unless ( $line =~ /$regex/ ) {
-    next;
-  }
+  next unless ( $line =~ /$regex/ );
   push @buffer, $line;
   if ( @buffer == $chunk || eof ) {
     my @times;

@@ -21,17 +21,16 @@ my $supplied_time_parser = DateTime::Format::Strptime->new(
   on_error => 'croak',
 );
 
-my $regex      = qr/$opts->{regex}/;
+my $regex = qr/$opts->{regex}/;
 
-my $low_needle = $supplied_time_parser->parse_datetime( $opts->{begin} );
+my $low_needle  = $supplied_time_parser->parse_datetime( $opts->{begin} );
 my $high_needle = $supplied_time_parser->parse_datetime( $opts->{end} );
 
 while ( my $line = <> ) {
-  unless ( $line =~ /$regex/ ) {
-    next;
-  }
+  my ($time) = $line =~ /$regex/;
+  next unless ( defined($time) );
   my $t = $log_time_parser->parse_datetime($time);
-  if ( $t >= $low_needle && $t <= $high_needle ) {
+  if ( $t > $low_needle && $t < $high_needle ) {
     print $line;
   }
 }
