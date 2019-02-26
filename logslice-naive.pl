@@ -9,7 +9,8 @@ use warnings;
 use Carp;
 
 my $opts = {};
-GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s" );
+GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s",
+  "--year=i" );
 
 my $log_time_parser = DateTime::Format::Strptime->new(
   pattern  => $opts->{format},
@@ -30,9 +31,8 @@ while ( my $line = <> ) {
   my ($time) = $line =~ /$regex/;
   next unless ( defined($time) );
   my $t = $log_time_parser->parse_datetime($time);
+  $t->set( year => $opts->{year} ) if ( $opts->{year} );
   if ( $t >= $low_needle && $t <= $high_needle ) {
     print $line;
-  }else {
-    print STDERR "mean! $line";
   }
 }

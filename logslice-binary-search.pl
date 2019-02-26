@@ -10,8 +10,10 @@ use Carp;
 use List::BinarySearch qw { binsearch_range };
 
 my $opts = {};
-GetOptions( $opts, "--begin=s", "--end=s", "--regex=s", "--format=s",
-  "--chunk=i" );
+GetOptions(
+  $opts,        "--begin=s", "--end=s", "--regex=s",
+  "--format=s", "--chunk=i", "--year=i"
+);
 
 my $chunk = $opts->{chunk} || 8192;
 
@@ -31,13 +33,12 @@ my @buffer;
 my @times;
 while ( my $line = <> ) {
   my ($time) = $line =~ /$regex/;
-  next unless(defined($time));
-  push @times, $time;
+  next unless ( defined($time) );
   push @buffer, $line;
+  push @times,  $time;
   if ( @buffer == $chunk || eof ) {
     my ( $low, $high ) = binsearch_range {
-      $log_time_parser->parse_datetime($a)
-        <=> $log_time_parser->parse_datetime($b)
+      comparable_time($a) <=> comparable_time($b)
     }
     $supplied_time_parser->parse_datetime( $opts->{begin} )
       ->strftime( $opts->{format} ),
@@ -48,6 +49,14 @@ while ( my $line = <> ) {
       print $buffer[$i];
     }
     @buffer = ();
-    @times = ();
+    @times  = ();
   }
+}
+
+sub comparable_time {
+  my ($t) = @_;
+  if ( $opts->{year} ) {
+    return $log_time_parser->parse_datetime($t)->set( year => $opts->{year} );
+  }
+  return $log_time_parser->parse_datetime($t);
 }
