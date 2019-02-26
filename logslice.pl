@@ -1,13 +1,12 @@
 #!/usr/bin/env perl
 
+use Carp;
 use DateTime::Format::Strptime;
 use Getopt::Long;
-use Time::Piece;
+use List::BinarySearch qw { binsearch_range };
 use feature qw{ say };
 use strict;
 use warnings;
-use Carp;
-use List::BinarySearch qw { binsearch_range };
 
 my $opts = {};
 GetOptions(
