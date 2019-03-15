@@ -27,4 +27,5 @@ sudo cpanm List::BinarySearch
 
 ## Why?
 
-Why use logslice? If the log entries are chronologically ordered, there's no point in examining every entry to find the first and last entry you are interested in. Use binary search! logslice does this for you.
+Why use logslice? If the log entries are chronologically ordered, there's no point in examining every entry to find the first and last entry you are interested in. Use binary search! logslice does this for you, and prints out all the intermediate log records.
+It can do this because it operates on large chunks of thousands of lines at once.
