@@ -9,7 +9,7 @@ You call logslice with a start time (--begin) and an end time (--end) specified 
 
 You also specify the format of the timestamp (--format) and a regular expression to pluck it out of the log.
 
-logslice operations on STDIN and sends its results to STDOUT.
+logslice operates on STDIN and sends its results to STDOUT.
 
 ```
 perl logslice.pl --begin="2019-02-22T06:00:00" --end="2019-02-22T07:00:00" \
