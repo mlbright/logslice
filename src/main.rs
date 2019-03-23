@@ -4,7 +4,7 @@ use structopt::StructOpt;
 
 /// Get a time slice of a log
 #[derive(StructOpt, Debug)]
-#[structopt(name = "ninja")]
+#[structopt(name = "timeslice")]
 struct CLI {
     // A flag, true if used in the command line. Note doc comment will
     // be used for the help message of the flag.
