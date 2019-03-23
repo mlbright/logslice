@@ -56,8 +56,12 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
         println!("printing logs from '{}' to '{}'", cli.start, cli.end);
     }
     let stdin = io::stdin();
+    let stdout = io::stdout(); // get the global stdout entity
+    stdout.lock();
+    let mut stdout_handle = io::BufWriter::new(stdout); // optional: wrap that handle in a buffer
+
     for line in stdin.lock().lines() {
-        println!("{}", line.unwrap());
+        writeln!(stdout_handle, "{}", line.unwrap()).unwrap();
     }
     Ok(())
 }
