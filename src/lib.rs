@@ -1,4 +1,5 @@
 extern crate structopt;
+extern crate itertools;
 
 use std::error::Error;
 use structopt::StructOpt;
@@ -48,7 +49,7 @@ pub struct CLI {
     // This option can be specified either `--chunk` or `-c value`.
     /// Specify chunk size
     #[structopt(short = "c", long = "chunk")]
-    chunk: u32,
+    chunk: usize,
 }
 
 pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
@@ -56,12 +57,14 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
         println!("printing logs from '{}' to '{}'", cli.start, cli.end);
     }
     let stdin = io::stdin();
-    let stdout = io::stdout(); // get the global stdout entity
-    stdout.lock();
-    let mut stdout_handle = io::BufWriter::new(stdout); // optional: wrap that handle in a buffer
 
-    for line in stdin.lock().lines() {
-        writeln!(stdout_handle, "{}", line.unwrap()).unwrap();
+    let mut chunk: Vec<String> = vec![String::new(); cli.chunk];
+    for (i,line) in stdin.lock().lines().enumerate() {
+        chunk.push(line.unwrap());
+        if i != 0 && i % cli.chunk == 0 {
+            println!("line: {}", i)
+        }
     }
+
     Ok(())
 }
