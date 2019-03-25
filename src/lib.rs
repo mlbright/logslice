@@ -1,10 +1,12 @@
 extern crate structopt;
 extern crate itertools;
+extern crate regex;
 
 use std::error::Error;
 use structopt::StructOpt;
 use std::io;
 use std::io::prelude::*;
+use regex::Regex;
 
 /// Get a time slice of a log
 #[derive(StructOpt, Debug)]
@@ -57,6 +59,7 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
         println!("printing logs from '{}' to '{}'", cli.start, cli.end);
     }
     let stdin = io::stdin();
+    let date_re = Regex::new(&cli.regexp).unwrap();
 
     let mut chunk: Vec<String> = vec![String::new(); cli.chunk];
     for (i,line) in stdin.lock().lines().enumerate() {

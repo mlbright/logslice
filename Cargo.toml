@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 structopt = "0.2.15"
 itertools = "0.8"
+regex = "1.1"
