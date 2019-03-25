@@ -7,6 +7,7 @@ use structopt::StructOpt;
 use std::io;
 use std::io::prelude::*;
 use regex::Regex;
+use itertools::Itertools;
 
 /// Get a time slice of a log
 #[derive(StructOpt, Debug)]
@@ -61,11 +62,9 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
     let stdin = io::stdin();
     let date_re = Regex::new(&cli.regexp).unwrap();
 
-    let mut chunk: Vec<String> = vec![String::new(); cli.chunk];
-    for (i,line) in stdin.lock().lines().enumerate() {
-        chunk.push(line.unwrap());
-        if i != 0 && i % cli.chunk == 0 {
-            println!("line: {}", i)
+    for chunk in &stdin.lock().lines().chunks(cli.chunk) {
+        for (i, line) in chunk.enumerate() {
+            println!("Line {}: {:?}", i, line);
         }
     }
 
