@@ -1,13 +1,13 @@
-extern crate structopt;
 extern crate itertools;
 extern crate regex;
+extern crate structopt;
 
+use itertools::Itertools;
+use regex::Regex;
 use std::error::Error;
-use structopt::StructOpt;
 use std::io;
 use std::io::prelude::*;
-use regex::Regex;
-use itertools::Itertools;
+use structopt::StructOpt;
 
 /// Get a time slice of a log
 #[derive(StructOpt, Debug)]
@@ -64,7 +64,7 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
 
     for chunk in &stdin.lock().lines().chunks(cli.chunk) {
         let lines: Vec<String> = chunk.map(|r| r.unwrap()).collect();
-        process_chunk(&lines,&timestamp_re);
+        process_chunk(&lines, &timestamp_re);
     }
 
     Ok(())

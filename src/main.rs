@@ -1,7 +1,7 @@
 use std::process;
 use structopt::StructOpt;
-use timegrep::CLI;
 use timegrep;
+use timegrep::CLI;
 
 fn main() {
     let config = CLI::from_args();
