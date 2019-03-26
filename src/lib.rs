@@ -60,13 +60,18 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
         println!("printing logs from '{}' to '{}'", cli.start, cli.end);
     }
     let stdin = io::stdin();
-    let date_re = Regex::new(&cli.regexp).unwrap();
+    let timestamp_re = Regex::new(&cli.regexp).unwrap();
 
     for chunk in &stdin.lock().lines().chunks(cli.chunk) {
-        for (i, line) in chunk.enumerate() {
-            println!("Line {}: {:?}", i, line);
-        }
+        let lines: Vec<String> = chunk.map(|r| r.unwrap()).collect();
+        process_chunk(&lines,&timestamp_re);
     }
 
     Ok(())
+}
+
+fn process_chunk(lines: &Vec<String>, time_re: &Regex) {
+    for line in lines {
+        println!("{}",line)
+    }
 }
