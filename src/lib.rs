@@ -11,7 +11,7 @@ use structopt::StructOpt;
 
 /// Get a time slice of a log
 #[derive(StructOpt, Debug)]
-#[structopt(name = "timeslice")]
+#[structopt(name = "timegrep")]
 pub struct CLI {
     // A flag, true if used in the command line. Note doc comment will
     // be used for the help message of the flag.
