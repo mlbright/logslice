@@ -33,3 +33,9 @@ It can do this because it operates on large chunks of thousands of lines at once
 ## See also
 
 [dategrep](https://github.com/mdom/dategrep)
+
+## Run the Rust version
+
+```
+cargo run -- --start="2019-03-25T06:00:00" --end="2019-03-25T07:00:00" --chunk=100 --year=2019 --regexp=" \[([^\]]+)\] " --format="%d/%b/%Y:%F" < haproxy.log 
+```
