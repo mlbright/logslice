@@ -72,6 +72,9 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
 
 fn process_chunk(lines: &Vec<String>, time_re: &Regex) {
     for line in lines {
-        println!("{}",line)
+        let caps = time_re.captures(line).unwrap();
+        if caps.len() > 0 {
+            println!("{}", &caps[1])
+        }
     }
 }
