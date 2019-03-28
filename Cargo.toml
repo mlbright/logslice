@@ -1,0 +1,11 @@
+[package]
+name = "timegrep"
+version = "0.1.0"
+authors = ["Martin-Louis Bright <martin.louis.bright@autodesk.com>"]
+edition = "2018"
+
+[dependencies]
+structopt = "0.2.15"
+itertools = "0.8"
+regex = "1.1"
+chrono = "0.4"

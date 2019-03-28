@@ -1,2 +1,6 @@
 /target
+*.lock
+*.log
 **/*.rs.bk
+*.err
+*.slice
