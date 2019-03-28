@@ -1,7 +1,9 @@
+extern crate chrono;
 extern crate itertools;
 extern crate regex;
 extern crate structopt;
 
+use chrono::prelude::*;
 use itertools::Itertools;
 use regex::Regex;
 use std::error::Error;
@@ -61,20 +63,39 @@ pub fn run(cli: CLI) -> Result<(), Box<dyn Error>> {
     }
     let stdin = io::stdin();
     let timestamp_re = Regex::new(&cli.regexp).unwrap();
+    let start = Utc
+        .datetime_from_str(&cli.start, "%Y-%m-%dT%H:%M:%S")
+        .unwrap();
+    let end = Utc
+        .datetime_from_str(&cli.end, "%Y-%m-%dT%H:%M:%S")
+        .unwrap();
 
     for chunk in &stdin.lock().lines().chunks(cli.chunk) {
         let lines: Vec<String> = chunk.map(|r| r.unwrap()).collect();
-        process_chunk(&lines, &timestamp_re);
+        process_chunk(&lines, &timestamp_re, &cli.format, &start, &end);
     }
 
     Ok(())
 }
 
-fn process_chunk(lines: &Vec<String>, time_re: &Regex) {
+fn process_chunk(
+    lines: &Vec<String>,
+    time_re: &Regex,
+    format: &str,
+    start: &DateTime<Utc>,
+    end: &DateTime<Utc>,
+) {
     for line in lines {
-        let caps = time_re.captures(line).unwrap();
-        if caps.len() > 0 {
-            println!("{}", &caps[1])
+        match time_re.captures(line) {
+            Some(caps) => {
+                if caps.len() > 0 {
+                    let stamp = Utc.datetime_from_str(&caps[1], format).unwrap();
+                    if stamp >= *start && stamp <= *end {
+                        println!("{}", line)
+                    }
+                }
+            }
+            None => eprintln!("{}", line),
         }
     }
 }
