@@ -10,7 +10,7 @@ use warnings;
 
 my $opts = {};
 GetOptions(
-  $opts,        "--begin=s", "--end=s", "--regex=s",
+  $opts,        "--start=s", "--finish=s", "--regexp=s",
   "--format=s", "--chunk=i", "--year=i"
 );
 
@@ -26,7 +26,7 @@ my $supplied_time_parser = DateTime::Format::Strptime->new(
   on_error => 'croak',
 );
 
-my $regex = qr/$opts->{regex}/;
+my $regex = qr/$opts->{regexp}/;
 
 my @buffer;
 my @times;
@@ -39,9 +39,9 @@ while ( my $line = <> ) {
     my ( $low, $high ) = binsearch_range {
       comparable_time($a) <=> comparable_time($b)
     }
-    $supplied_time_parser->parse_datetime( $opts->{begin} )
+    $supplied_time_parser->parse_datetime( $opts->{start} )
       ->strftime( $opts->{format} ),
-      $supplied_time_parser->parse_datetime( $opts->{end} )
+      $supplied_time_parser->parse_datetime( $opts->{finish} )
       ->strftime( $opts->{format} ), @times;
 
     for ( my $i = $low; $i <= $high; $i++ ) {

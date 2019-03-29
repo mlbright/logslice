@@ -33,7 +33,7 @@ pub struct CLI {
 
     // This option can be specified either `--end` or `-e value`.
     /// end time
-    #[structopt(short = "e", long = "end")]
+    #[structopt(short = "f", long = "finish")]
     end: String,
 
     // This option can be specified either `--regexp` or `-r value`.
@@ -43,17 +43,12 @@ pub struct CLI {
 
     // This option can be specified either `--format` or `-f value`.
     /// format of the timestamp
-    #[structopt(short = "f", long = "format")]
+    #[structopt(short = "t", long = "time-format")]
     format: String,
-
-    // This option can be specified either `--year` or `-y value`.
-    /// Specify a year, if necessary
-    #[structopt(short = "y", long = "year")]
-    year: u32,
 
     // This option can be specified either `--chunk` or `-c value`.
     /// Specify chunk size
-    #[structopt(short = "c", long = "chunk")]
+    #[structopt(short = "c", long = "chunk", default_value = "8192")]
     chunk: usize,
 }
 
