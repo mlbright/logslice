@@ -9,15 +9,13 @@ use strict;
 use warnings;
 
 my $opts = {};
-GetOptions(
-  $opts,        "--start=s", "--finish=s", "--regexp=s",
-  "--format=s", "--chunk=i", "--year=i"
-);
+GetOptions( $opts, "--start=s", "--finish=s", "--regexp=s",
+  "--time-format=s", "--chunk=i", "--year=i" );
 
 my $chunk = $opts->{chunk} || 8192;
 
 my $log_time_parser = DateTime::Format::Strptime->new(
-  pattern  => $opts->{format},
+  pattern  => $opts->{'time-format'},
   on_error => 'croak',
 );
 
@@ -32,7 +30,10 @@ my @buffer;
 my @times;
 while ( my $line = <> ) {
   my ($time) = $line =~ /$regex/;
-  next unless ( defined($time) );
+  unless ( defined($time) ) {
+    print STDERR $line;
+    next;
+  }
   push @buffer, $line;
   push @times,  $time;
   if ( @buffer == $chunk || eof ) {
@@ -40,9 +41,9 @@ while ( my $line = <> ) {
       comparable_time($a) <=> comparable_time($b)
     }
     $supplied_time_parser->parse_datetime( $opts->{start} )
-      ->strftime( $opts->{format} ),
+      ->strftime( $opts->{'time-format'} ),
       $supplied_time_parser->parse_datetime( $opts->{finish} )
-      ->strftime( $opts->{format} ), @times;
+      ->strftime( $opts->{'time-format'} ), @times;
 
     for ( my $i = $low; $i <= $high; $i++ ) {
       print $buffer[$i];
